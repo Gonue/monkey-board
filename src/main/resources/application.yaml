@@ -1,0 +1,15 @@
+debug: false
+management.endpoints.web.exposure.include: "*"
+
+logging:
+  level:
+    com.sh.board: debug
+    org.springframework.web.servlet: debug
+    org.hibernate.type.descriptor.sql.BasicBinder: trace
+
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/board
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
