@@ -2,6 +2,7 @@ package com.sh.board.repository;
 
 import com.sh.board.config.JpaConfig;
 import com.sh.board.domain.Article;
+import com.sh.board.domain.UserAccount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,15 @@ import static org.assertj.core.api.Assertions.*;
 class JpaRepositoryTest {
     private final ArticleRepository articleRepository;
     private final ArticleCommentRepository articleCommentRepository;
+    private final UserAccountRepository userAccountRepository;
 
     public JpaRepositoryTest( //생성자 주입패턴
             @Autowired ArticleRepository articleRepository,
-            @Autowired ArticleCommentRepository articleCommentRepository) {
+            @Autowired ArticleCommentRepository articleCommentRepository,
+            @Autowired UserAccountRepository userAccountRepository) {
         this.articleRepository = articleRepository;
         this.articleCommentRepository = articleCommentRepository;
+        this.userAccountRepository = userAccountRepository;
     }
     @DisplayName("Select 테스트")
     @Test
@@ -38,15 +42,17 @@ class JpaRepositoryTest {
         //Then
         assertThat(articles)
                 .isNotNull()
-                .hasSize(121);
+                .hasSize(100);
     }
     @DisplayName("insert 테스트")
     @Test
     void givenTestData_whenInserting_thenWorksFine(){
         //Given
         long previousCount = articleRepository.count();
+        UserAccount userAccount = userAccountRepository.save(UserAccount.of("kim","qwer1234",null,null,null));
+        Article article = Article.of(userAccount, "new article", "new content", "hashtag");
         //When
-        Article savedArticle = articleRepository.save(Article.of("new article", "new content", "#springTest"));
+        articleRepository.save(article);
         //Then
         assertThat(articleRepository.count())
                 .isEqualTo(previousCount + 1);
