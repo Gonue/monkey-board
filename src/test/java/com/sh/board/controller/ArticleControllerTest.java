@@ -4,6 +4,7 @@ import com.sh.board.config.SecurityConfig;
 import com.sh.board.dto.ArticleWithCommentsDto;
 import com.sh.board.dto.UserAccountDto;
 import com.sh.board.service.ArticleService;
+import com.sh.board.service.PaginationService;
 import org.assertj.core.api.BDDAssertions;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -23,11 +24,11 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ArticleControllerTest {
     private final MockMvc mvc;
     @MockBean private ArticleService articleService;
-
+    @MockBean private PaginationService paginationService;
     public ArticleControllerTest(@Autowired MockMvc mvc) {
         this.mvc = mvc;
     }
@@ -47,13 +48,16 @@ class ArticleControllerTest {
         //Given
         BDDMockito.given(articleService.searchArticles(ArgumentMatchers.eq(null),ArgumentMatchers.eq(null), any(Pageable.class)))
                         .willReturn(Page.empty());
+        BDDMockito.given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0,1,2,3,4));
         //When & Then
         mvc.perform(get("/articles"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
                 .andExpect(view().name("articles/index"))
-                .andExpect(model().attributeExists("articles"));
+                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attributeExists("paginationBarNumbers"));
         BDDMockito.then(articleService).should().searchArticles(eq(null),eq(null), any(Pageable.class));
+        BDDMockito.then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
     @DisplayName("[view] {GET} 게시글 상세 페이지 - 정상호출")
         @Test
