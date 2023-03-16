@@ -1,10 +1,12 @@
 package com.sh.board.controller;
 
 import com.sh.board.config.SecurityConfig;
+import com.sh.board.domain.type.SearchType;
 import com.sh.board.dto.ArticleWithCommentsDto;
 import com.sh.board.dto.UserAccountDto;
 import com.sh.board.service.ArticleService;
 import com.sh.board.service.PaginationService;
+import io.micrometer.core.instrument.search.Search;
 import org.assertj.core.api.BDDAssertions;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.Matchers;
@@ -57,6 +59,28 @@ class ArticleControllerTest {
                 .andExpect(model().attributeExists("articles"))
                 .andExpect(model().attributeExists("paginationBarNumbers"));
         BDDMockito.then(articleService).should().searchArticles(eq(null),eq(null), any(Pageable.class));
+        BDDMockito.then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
+    }
+    @DisplayName("[view] {GET} 게시글 리스트 (게시판)페이지 - 검색어와 호출")
+    @Test
+    public void givenSerachKeyword_whenSearchingArticlesView_thenReturnsArticlesView() throws Exception {
+        //Given
+        SearchType searchType = SearchType.TITLE;
+        String searchValue = "title";
+        BDDMockito.given(articleService.searchArticles(ArgumentMatchers.eq(searchType),ArgumentMatchers.eq(searchValue), any(Pageable.class)))
+                        .willReturn(Page.empty());
+        BDDMockito.given(paginationService.getPaginationBarNumbers(anyInt(), anyInt())).willReturn(List.of(0,1,2,3,4));
+        //When & Then
+        mvc.perform(get("/articles")
+                        .queryParam("searchType", searchType.name())
+                        .queryParam("searchValue", searchValue)
+                )
+                .andExpect(status().isOk())
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_HTML))
+                .andExpect(view().name("articles/index"))
+                .andExpect(model().attributeExists("articles"))
+                .andExpect(model().attributeExists("searchTypes"));
+        BDDMockito.then(articleService).should().searchArticles(eq(searchType),eq(searchValue), any(Pageable.class));
         BDDMockito.then(paginationService).should().getPaginationBarNumbers(anyInt(), anyInt());
     }
     @DisplayName("[view] {GET} 게시글 상세 페이지 - 정상호출")
