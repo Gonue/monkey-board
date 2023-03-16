@@ -1,10 +1,12 @@
 package com.sh.board.service;
 
 import com.sh.board.domain.Article;
+import com.sh.board.domain.UserAccount;
 import com.sh.board.domain.type.SearchType;
 import com.sh.board.dto.ArticleDto;
 import com.sh.board.dto.ArticleWithCommentsDto;
 import com.sh.board.repository.ArticleRepository;
+import com.sh.board.repository.UserAccountRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,6 +26,7 @@ import static com.sh.board.domain.type.SearchType.TITLE;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private UserAccountRepository userAccountRepository;
 
     //TODO: 나중에 다시 리팩토링 예정,,****
     @Transactional(readOnly = true)
@@ -56,17 +59,24 @@ public class ArticleService {
     }
 
     @Transactional(readOnly = true)
-    public ArticleWithCommentsDto getArticle(Long articleId) {
+    public ArticleWithCommentsDto getArticleWithComments(Long articleId) {
         return articleRepository.findById(articleId)
                 .map(ArticleWithCommentsDto::from)
                 .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
     }
+    @Transactional(readOnly = true)
+        public ArticleDto getArticle(Long articleId) {
+            return articleRepository.findById(articleId)
+                    .map(ArticleDto::from)
+                    .orElseThrow(() -> new EntityNotFoundException("게시글이 없습니다 - articleId: " + articleId));
+        }
 
     public void saveArticle(ArticleDto dto) {
+        UserAccount userAccount = userAccountRepository.getReferenceById(dto.getUserAccountDto().getUserId());
         articleRepository.save(dto.toEntity());
     }
 
-    public void updateArticle(ArticleDto dto) {
+    public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(dto.getId());
             if(dto.getTitle() != null){
@@ -85,4 +95,9 @@ public class ArticleService {
     public void deleteArticle(long articleId) {
         articleRepository.deleteById(articleId);
     }
+
+    public long getArticleCount(){
+        return articleRepository.count();
+    }
+
 }
