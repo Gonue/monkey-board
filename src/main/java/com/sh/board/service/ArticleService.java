@@ -26,7 +26,7 @@ import static com.sh.board.domain.type.SearchType.TITLE;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
-    private UserAccountRepository userAccountRepository;
+    private final UserAccountRepository userAccountRepository;
 
     //TODO: 나중에 다시 리팩토링 예정,,****
     @Transactional(readOnly = true)
@@ -73,12 +73,12 @@ public class ArticleService {
 
     public void saveArticle(ArticleDto dto) {
         UserAccount userAccount = userAccountRepository.getReferenceById(dto.getUserAccountDto().getUserId());
-        articleRepository.save(dto.toEntity());
+        articleRepository.save(dto.toEntity(userAccount));
     }
 
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
-            Article article = articleRepository.getReferenceById(dto.getId());
+            Article article = articleRepository.getReferenceById(articleId);
             if(dto.getTitle() != null){
                 article.setTitle(dto.getTitle());
             }
@@ -86,7 +86,6 @@ public class ArticleService {
                 article.setContent(dto.getContent());
             }
             article.setHashtag(dto.getHashtag());
-            articleRepository.save(article);
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패, 게시글 찾지 못함 dto :" +  dto);
         }

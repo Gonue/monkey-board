@@ -45,6 +45,7 @@ public class ArticleController {
             ArticleWithCommentResponse articleWithCommentResponse =  ArticleWithCommentResponse.from(articleService.getArticleWithComments(articleId));
             map.addAttribute("article", articleWithCommentResponse);
             map.addAttribute("articleComments", articleWithCommentResponse.getArticleCommentResponses());
+            map.addAttribute("totalCount", articleService.getArticleCount());
             return "articles/detail";
         }
     @GetMapping("/form")
@@ -58,7 +59,7 @@ public class ArticleController {
        public String postNewArticle(ArticleRequest articleRequest) {
            // TODO: 인증 정보를 넣어줘야함
            articleService.saveArticle(articleRequest.toDto(UserAccountDto.of(
-                   "kim", "1234", "kim@gmail.com", "Kim", "memo", null, null, null, null
+                   "kim", "1234", "kim@gmail.com", "kim", "memo"
            )));
 
            return "redirect:/articles";
@@ -78,7 +79,7 @@ public class ArticleController {
        public String updateArticle(@PathVariable Long articleId, ArticleRequest articleRequest) {
            // TODO: 인증 정보를 넣어줘야함
            articleService.updateArticle(articleId, articleRequest.toDto(UserAccountDto.of(
-                   "uno", "asdf1234", "uno@mail.com", "Uno", "memo", null, null, null, null
+                   "kim", "1234", "kim@gmail.com", "kim", "memo"
            )));
 
            return "redirect:/articles/" + articleId;
