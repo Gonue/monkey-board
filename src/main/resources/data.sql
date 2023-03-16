@@ -1,8 +1,8 @@
 insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by) values
-('kim', 'asdf1234', 'kim', 'kim@gmail.com', 'hi1.', now(), 'kim', now(), 'kim')
+('kim', '1234', 'kim', 'kim@gmail.com', 'memo', now(), 'kim', now(), 'kim')
 ;
 insert into user_account (user_id, user_password, nickname, email, memo, created_at, created_by, modified_at, modified_by) values
-('kim2', 'asdf1234', 'kim2', 'kim2@gmail.com', 'hi2.', now(), 'kim2', now(), 'kim2')
+('kim2', '1234', 'kim2', 'kim2@gmail.com', 'memo', now(), 'kim2', now(), 'kim2')
 ;
 
 -- 123 게시글
