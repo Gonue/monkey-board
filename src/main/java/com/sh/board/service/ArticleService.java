@@ -79,20 +79,23 @@ public class ArticleService {
     public void updateArticle(Long articleId, ArticleDto dto) {
         try {
             Article article = articleRepository.getReferenceById(articleId);
-            if(dto.getTitle() != null){
-                article.setTitle(dto.getTitle());
-            }
-            if(dto.getContent() != null){
-                article.setContent(dto.getContent());
+            UserAccount userAccount = userAccountRepository.getReferenceById(dto.getUserAccountDto().getUserId());
+            if(article.getUserAccount().equals(userAccount)){
+                if(dto.getTitle() != null){
+                    article.setTitle(dto.getTitle());
+                }
+                if(dto.getContent() != null){
+                    article.setContent(dto.getContent());
+                }
             }
             article.setHashtag(dto.getHashtag());
         } catch (EntityNotFoundException e) {
-            log.warn("게시글 업데이트 실패, 게시글 찾지 못함 dto :" +  dto);
+            log.warn("게시글 업데이트 실패, 게시글 수정에 필요한 정보를 찾을수 없음  " +  e.getLocalizedMessage());
         }
     }
 
-    public void deleteArticle(long articleId) {
-        articleRepository.deleteById(articleId);
+    public void deleteArticle(long articleId, String userId) {
+        articleRepository.deleteByIdAndUserAccount_UserId(articleId, userId);
     }
 
     public long getArticleCount(){

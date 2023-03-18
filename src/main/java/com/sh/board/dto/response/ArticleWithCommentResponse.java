@@ -1,4 +1,4 @@
-package com.sh.board.response;
+package com.sh.board.dto.response;
 
 
 import com.sh.board.dto.ArticleWithCommentsDto;
