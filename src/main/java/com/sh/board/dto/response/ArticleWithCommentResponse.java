@@ -19,10 +19,11 @@ public class ArticleWithCommentResponse {
     private final LocalDateTime createdAt;
     private final String email;
     private final String nickname;
+    private final String userId;
     private final Set<ArticleCommentResponse> articleCommentResponses;
 
-    public static ArticleWithCommentResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname, Set<ArticleCommentResponse> articleCommentResponses) {
-        return new ArticleWithCommentResponse(id, title, content, hashtag, createdAt, email, nickname, articleCommentResponses);
+    public static ArticleWithCommentResponse of(Long id, String title, String content, String hashtag, LocalDateTime createdAt, String email, String nickname, String userId,Set<ArticleCommentResponse> articleCommentResponses) {
+        return new ArticleWithCommentResponse(id, title, content, hashtag, createdAt, email, nickname, userId, articleCommentResponses);
     }
 
     public static ArticleWithCommentResponse from(ArticleWithCommentsDto dto){
@@ -38,6 +39,7 @@ public class ArticleWithCommentResponse {
                 dto.getCreatedAt(),
                 dto.getUserAccountDto().getEmail(),
                 nickname,
+                dto.getUserAccountDto().getUserId(),
                 dto.getArticleCommentDtos().stream()
                         .map(ArticleCommentResponse::from)
                         .collect(Collectors.toCollection(LinkedHashSet::new))
