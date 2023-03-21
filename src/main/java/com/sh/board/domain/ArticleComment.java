@@ -55,11 +55,11 @@ public class ArticleComment extends AuditingFields{
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ArticleComment that = (ArticleComment) o;
-        return id != null && id.equals(that.id);
+        return this .getId()!= null && this.getId().equals(that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(this.getId());
     }
 }
