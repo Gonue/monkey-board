@@ -16,6 +16,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 import static com.sh.board.domain.type.SearchType.CONTENT;
 import static com.sh.board.domain.type.SearchType.TITLE;
 
@@ -50,7 +53,8 @@ public class ArticleService {
                     result = articleRepository.findByUserAccount_NicknameContaining(searchKeyword, pageable).map(ArticleDto::from);
                     break;
                 case HASHTAG:
-                    result = articleRepository.findByHashtag("#" + searchKeyword, pageable).map(ArticleDto::from);
+                    result = articleRepository.findByHashtagNames(
+                            Arrays.stream(searchKeyword.split(" ")).collect(Collectors.toList()), pageable).map(ArticleDto::from);
                     break;
                 default:
                     break;
@@ -88,7 +92,6 @@ public class ArticleService {
                     article.setContent(dto.getContent());
                 }
             }
-            article.setHashtag(dto.getHashtag());
         } catch (EntityNotFoundException e) {
             log.warn("게시글 업데이트 실패, 게시글 수정에 필요한 정보를 찾을수 없음  " +  e.getLocalizedMessage());
         }
