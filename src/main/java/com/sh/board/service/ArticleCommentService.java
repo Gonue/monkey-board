@@ -40,7 +40,7 @@ public class ArticleCommentService {
             log.warn("댓글 저장 실패, 댓글 작성에 필요한 정보를 찾을수 없음. - {}", e.getLocalizedMessage());
         }
     }
-
+    @Deprecated
     public void updateArticleComment(ArticleCommentDto dto){
         try {
             ArticleComment articleComment = articleCommentRepository.getReferenceById(dto.getId());
