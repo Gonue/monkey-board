@@ -40,17 +40,17 @@ public class ArticleCommentService {
             log.warn("댓글 저장 실패, 댓글 작성에 필요한 정보를 찾을수 없음. - {}", e.getLocalizedMessage());
         }
     }
-    @Deprecated
-    public void updateArticleComment(ArticleCommentDto dto){
-        try {
-            ArticleComment articleComment = articleCommentRepository.getReferenceById(dto.getId());
-            if(dto.getContent() != null){
-                articleComment.setContent(dto.getContent());
-            }
-        }catch (EntityNotFoundException e){
-            log.warn("댓글 업데이트 실패, 댓글을 찾을 수 없음. - dto : {}" , dto);
-        }
-    }
+//    @Deprecated
+//    public void updateArticleComment(ArticleCommentDto dto){
+//        try {
+//            ArticleComment articleComment = articleCommentRepository.getReferenceById(dto.getId());
+//            if(dto.getContent() != null){
+//                articleComment.setContent(dto.getContent());
+//            }
+//        }catch (EntityNotFoundException e){
+//            log.warn("댓글 업데이트 실패, 댓글을 찾을 수 없음. - dto : {}" , dto);
+//        }
+//    }
 
     public void deleteArticleComment(Long articleCommentId, String  userId){
         articleCommentRepository.deleteByIdAndUserAccount_UserId(articleCommentId, userId);
