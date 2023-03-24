@@ -12,17 +12,23 @@ import java.io.Serializable;
 @Data
 public class ArticleCommentRequest implements Serializable {
     private final Long articleId;
+    private final Long parentCommentId;
     private final String content;
 
 
     public static ArticleCommentRequest of (Long articleId, String content){
-        return new ArticleCommentRequest(articleId, content);
+        return ArticleCommentRequest.of(articleId, null, content);
     }
+    public static ArticleCommentRequest of (Long articleId, Long parentCommentId, String content){
+        return new ArticleCommentRequest(articleId, null, content);
+    }
+
 
     public ArticleCommentDto toDto(UserAccountDto userAccountDto){
         return ArticleCommentDto.of(
                 articleId,
                 userAccountDto,
+                parentCommentId,
                 content
         );
     }
