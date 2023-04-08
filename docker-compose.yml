@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+
+  board-test-postgresql:
+    container_name: board-test-postgres
+    image: postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: board
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+    volumes:
+      - /var/lib/postgresql/data
+    networks:
+      - board-network
+
+  gonue-board-server:
+    container_name: gonue-board-server
+    build: .
+    depends_on:
+      - board-test-postgresql
+    image: gonue/board-server
+    ports:
+      - "8080:8080"
+    networks:
+      - board-network
+    restart: always
+networks:
+  board-network:
+    driver: bridge
+
