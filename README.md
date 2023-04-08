@@ -41,7 +41,7 @@
 
 ----
 
-## [🔗 ERD](https://github.com/Gonue/simple-board/tree/master/docs)
+## [🔗 ERD](https://github.com/Gonue/simple-board/blob/master/docs/erd2.png)
 
 ----
 
